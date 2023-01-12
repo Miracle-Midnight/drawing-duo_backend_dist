@@ -17,12 +17,9 @@ export declare class UserController {
     GetUserId(userDto: UserDto): Promise<{
         token: string;
         userid: number;
-        username: string;
         nickname: string;
-        level: number;
-        rank: number;
-        introduction: string;
         image: string;
+        room: import("../room/entities/room.entity").Room;
     }>;
-    uploadFile(file: Express.Multer.File, userDto: any): Promise<import("../room/entities/image.entity").Image>;
+    uploadFile(files: Array<Express.Multer.File>, userDto: any): Promise<import("../room/entities/image.entity").Image>;
 }

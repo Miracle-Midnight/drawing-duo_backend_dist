@@ -19,6 +19,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
+const exceptions_1 = require("@nestjs/common/exceptions");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     constructor(userRepository) {
         super({
@@ -27,6 +28,18 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
             secretOrKey: 'secret',
         });
         this.userRepository = userRepository;
+    }
+    async validate(payload) {
+        const cat = await this.userRepository.findOne({
+            where: { id: Number(payload.sub) },
+            select: ['id', 'userid'],
+        });
+        if (cat) {
+            return cat;
+        }
+        else {
+            throw new exceptions_1.UnauthorizedException('접근 오류');
+        }
     }
 };
 JwtStrategy = __decorate([

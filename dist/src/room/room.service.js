@@ -27,7 +27,23 @@ let RoomService = class RoomService {
         this.imageRepository = imageRepository;
     }
     async getAllImage() {
-        return await this.imageRepository.find();
+        return await this.imageRepository.find({ where: { type: true } });
+    }
+    async selectImage(selectImageDto) {
+        const { roomid, imageid } = selectImageDto;
+        const room = await this.roomRepository.findOne({
+            where: { id: roomid },
+            relations: ['images'],
+        });
+        if (!room) {
+            throw new exceptions_1.NotFoundException('방이 존재하지 않습니다.');
+        }
+        const image = await this.imageRepository.findOneBy({ id: imageid });
+        if (!image) {
+            throw new exceptions_1.NotFoundException('이미지가 존재하지 않습니다.');
+        }
+        room.images = [image];
+        return this.roomRepository.save(room);
     }
     async createRoom(id, createRoomDto) {
         const newRoom = this.roomRepository.create(createRoomDto);

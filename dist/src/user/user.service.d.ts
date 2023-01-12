@@ -23,5 +23,5 @@ export declare class UserService {
         rank: number;
         introduction: string;
     }>;
-    uploadImg(UserDto: any, file: Express.Multer.File): Promise<Image>;
+    uploadImg(UserDto: any, folder: string, files: Array<Express.Multer.File>): Promise<Image>;
 }

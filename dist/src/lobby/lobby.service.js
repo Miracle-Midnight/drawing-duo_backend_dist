@@ -25,32 +25,21 @@ let LobbyService = class LobbyService {
         this.roomRepository = roomRepository;
         this.imageRepository = imageRepository;
     }
-    async getLobby() {
-        return this.roomRepository.find();
-    }
     async inRoom(enterRoomDto) {
-        const { userid, roomid, password, imageid } = enterRoomDto;
+        const { userid, roomid } = enterRoomDto;
         const checkUser = await this.roomRepository.findOne({
             where: { id: roomid },
             relations: ['users'],
         });
-        if (checkUser.users.length >= 4) {
+        if (checkUser.users.length >= 2) {
             throw new common_1.ForbiddenException('방이 꽉 찼습니다.');
         }
         const targetRoom = await this.roomRepository.findOne({
             where: { id: roomid },
-            relations: ['images', 'users'],
+            relations: ['users'],
         });
         if (!targetRoom)
             throw new common_1.NotFoundException('방이 존재하지 않습니다.');
-        if (imageid) {
-            const image = await this.imageRepository.findOneBy({ id: imageid });
-            if (!image)
-                throw new common_1.NotFoundException('이미지가 존재하지 않습니다.');
-            targetRoom.images = [...targetRoom.images, image];
-            console.log(targetRoom.images);
-            await this.roomRepository.save(targetRoom);
-        }
         const userinfo = await this.userRepository.findOne({
             where: { id: userid },
             relations: ['room', 'profile'],
@@ -62,7 +51,7 @@ let LobbyService = class LobbyService {
         return { userNickName: userinfo.profile.nickname };
     }
     async outRoom(enterRoomDto) {
-        const { userid, roomid, imageid } = enterRoomDto;
+        const { userid, roomid } = enterRoomDto;
         const userinfo = await this.userRepository.findOne({
             where: { id: userid },
             relations: ['room', 'profile'],
@@ -71,18 +60,7 @@ let LobbyService = class LobbyService {
             throw new common_1.ForbiddenException('방에 입장하지 않았습니다.');
         }
         userinfo.room = null;
-        userinfo.ready = false;
         await this.userRepository.save(userinfo);
-        const targetRoom = await this.roomRepository.findOne({
-            where: { id: roomid },
-            relations: ['images', 'users'],
-        });
-        if (imageid) {
-            const image = await this.imageRepository.findOneBy({ id: imageid });
-            targetRoom.images = targetRoom.images.filter((img) => img.id !== image.id);
-            await this.roomRepository.save(targetRoom);
-        }
-        console.log(targetRoom);
         return { userNickName: userinfo.profile.nickname };
     }
 };
