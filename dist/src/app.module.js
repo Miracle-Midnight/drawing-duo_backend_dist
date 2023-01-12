@@ -26,6 +26,7 @@ const aws_service_1 = require("./aws.service");
 const friend_module_1 = require("./friend/friend.module");
 const gamelobby_module_1 = require("./gamelobby/gamelobby.module");
 const logger_middleware_1 = require("./common/middlewares/logger.middleware");
+const data_source_1 = require("../db/data-source");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logger_middleware_1.LoggerMiddleware).forRoutes('*');
@@ -42,18 +43,7 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
-                host: process.env.DB_HOST,
-                port: parseInt(process.env.DB_PORT),
-                username: process.env.DB_USERNAME,
-                password: process.env.DB_PASSWORD,
-                database: process.env.DB_DATABASE,
-                entities: ['dist/src/*/entities/*.entity.{js,ts}'],
-                migrations: ['dist/db/migrations/*.{js.ts}'],
-                synchronize: true,
-                logging: true,
-            }),
+            typeorm_1.TypeOrmModule.forRoot(data_source_1.dataSourceOptions),
             gateway_module_1.ChatsAndDrawModule,
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'client'),

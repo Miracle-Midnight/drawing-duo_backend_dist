@@ -28,7 +28,7 @@ let AuthService = class AuthService {
         const { userid, password } = data;
         const isUserExist = await this.userRepository.findOne({
             where: { userid: userid },
-            relations: ['profile', 'profile.image'],
+            relations: ['profile', 'profile.image', 'room'],
         });
         if (!isUserExist) {
             throw new common_1.UnauthorizedException('이메일과 비밀번호를 확인해주세요.');
@@ -41,12 +41,9 @@ let AuthService = class AuthService {
         return {
             token: this.JwtService.sign(payload),
             userid: isUserExist.id,
-            username: isUserExist.userid,
             nickname: isUserExist.profile.nickname,
-            level: isUserExist.profile.level,
-            rank: isUserExist.profile.rank,
-            introduction: isUserExist.profile.introduction,
             image: isUserExist.profile.image.image,
+            room: isUserExist.room,
         };
     }
 };

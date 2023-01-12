@@ -3,4 +3,5 @@ export declare class Image extends BaseEntity {
     id: number;
     type: boolean;
     image: string;
+    frameImage: string;
 }

@@ -87,15 +87,45 @@ let UserService = class UserService {
             throw new common_2.BadRequestException(`File upload failed : ${error}`);
         }
     }
-    async uploadImg(UserDto, file) {
-        const { userid } = UserDto;
-        const path = `http://localhost:3000/media/profile/${file.filename}`;
-        const newImage = await this.imageRepository.create({
-            type: false,
-            image: path,
-        });
-        await this.imageRepository.save(newImage);
-        return newImage;
+    async uploadImg(UserDto, folder, files) {
+        const key1 = `${folder}/${Date.now()}_${path.basename(files[0].originalname)}`.replace(/ /g, '');
+        const key2 = `${folder}/${Date.now()}_${path.basename(files[1].originalname)}`.replace(/ /g, '');
+        const imagePath1 = `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${key1}`;
+        const imagePath2 = `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${key2}`;
+        try {
+            const s3Object = await this.awsS3
+                .putObject({
+                Bucket: this.S3_BUCKET_NAME,
+                Key: key1,
+                Body: files[0].buffer,
+                ACL: 'public-read',
+                ContentType: files[0].mimetype,
+            })
+                .promise();
+        }
+        catch (error) {
+            throw new common_2.BadRequestException(`File upload failed : ${error}`);
+        }
+        try {
+            const s3Object = await this.awsS3
+                .putObject({
+                Bucket: this.S3_BUCKET_NAME,
+                Key: key2,
+                Body: files[1].buffer,
+                ACL: 'public-read',
+                ContentType: files[1].mimetype,
+            })
+                .promise();
+        }
+        catch (error) {
+            throw new common_2.BadRequestException(`File upload failed : ${error}`);
+        }
+        const newimage = await this.imageRepository.create();
+        newimage.image = imagePath1;
+        newimage.frameImage = imagePath2;
+        newimage.type = true;
+        await this.imageRepository.save(newimage);
+        return newimage;
     }
 };
 __decorate([
@@ -114,7 +144,7 @@ __decorate([
 __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, String, Array]),
     __metadata("design:returntype", Promise)
 ], UserService.prototype, "uploadImg", null);
 UserService = __decorate([
