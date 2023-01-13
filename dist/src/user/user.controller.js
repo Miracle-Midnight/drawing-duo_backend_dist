@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const user_dto_1 = require("./dto/user.dto");
 const user_service_1 = require("./user.service");
 const platform_express_1 = require("@nestjs/platform-express");
-const multer_options_1 = require("../common/utils/multer.options");
 const auth_service_1 = require("../auth/auth.service");
 let UserController = class UserController {
     constructor(userService, authService) {
@@ -30,10 +29,8 @@ let UserController = class UserController {
     GetUserId(userDto) {
         return this.authService.jwtLogIn(userDto);
     }
-    uploadFile(file, userDto) {
-        console.log(file);
-        console.log(userDto);
-        return this.userService.uploadImg(userDto, file);
+    uploadFile(files, userDto) {
+        return this.userService.uploadImg(userDto, 'game', files);
     }
 };
 __decorate([
@@ -53,12 +50,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "GetUserId", null);
 __decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', (0, multer_options_1.multerOptions)('profile'))),
-    (0, common_1.Post)('upload'),
-    __param(0, (0, common_1.UploadedFile)()),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('image', 2)),
+    (0, common_1.Post)('uploads'),
+    __param(0, (0, common_1.UploadedFiles)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Array, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "uploadFile", null);
 UserController = __decorate([

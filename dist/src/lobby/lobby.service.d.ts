@@ -8,7 +8,6 @@ export declare class LobbyService {
     private roomRepository;
     private imageRepository;
     constructor(userRepository: Repository<User>, roomRepository: Repository<Room>, imageRepository: Repository<Image>);
-    getLobby(): Promise<Room[]>;
     inRoom(enterRoomDto: EnterRoomDto): Promise<{
         userNickName: string;
     }>;

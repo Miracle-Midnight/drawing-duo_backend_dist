@@ -9,11 +9,8 @@ export declare class AuthService {
     jwtLogIn(data: LoginREquestDto): Promise<{
         token: string;
         userid: number;
-        username: string;
         nickname: string;
-        level: number;
-        rank: number;
-        introduction: string;
         image: string;
+        room: import("../room/entities/room.entity").Room;
     }>;
 }

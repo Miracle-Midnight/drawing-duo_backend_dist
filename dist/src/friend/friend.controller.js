@@ -16,14 +16,15 @@ exports.FriendController = void 0;
 const common_1 = require("@nestjs/common");
 const friend_service_1 = require("./friend.service");
 const common_2 = require("@nestjs/common");
+const decorators_1 = require("@nestjs/common/decorators");
 let FriendController = class FriendController {
     constructor(friendService) {
         this.friendService = friendService;
     }
-    getFriend(userDto) {
+    getFriend(req, userDto) {
         return this.friendService.getFriendList(userDto);
     }
-    serchUser(friendname) {
+    serchUser(req, friendname) {
         return this.friendService.serchUser(friendname);
     }
     addFriend(userDto) {
@@ -32,16 +33,18 @@ let FriendController = class FriendController {
 };
 __decorate([
     (0, common_2.Get)(':id'),
-    __param(0, (0, common_2.Param)('id')),
+    __param(0, (0, decorators_1.Req)()),
+    __param(1, (0, common_2.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], FriendController.prototype, "getFriend", null);
 __decorate([
     (0, common_2.Get)('serch/:id'),
-    __param(0, (0, common_2.Param)('id')),
+    __param(0, (0, decorators_1.Req)()),
+    __param(1, (0, common_2.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], FriendController.prototype, "serchUser", null);
 __decorate([

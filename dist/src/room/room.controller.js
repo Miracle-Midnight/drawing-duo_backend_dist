@@ -21,12 +21,16 @@ const pipes_1 = require("@nestjs/common/pipes");
 const positiveInt_pipe_1 = require("../common/pipes/positiveInt.pipe");
 const swagger_1 = require("@nestjs/swagger");
 const room_dto_1 = require("./dto/room.dto");
+const select_image_dto_1 = require("./dto/select-image.dto");
 let RoomController = class RoomController {
     constructor(roomService) {
         this.roomService = roomService;
     }
     getAllImage() {
         return this.roomService.getAllImage();
+    }
+    selectImage(selectImageDto) {
+        return this.roomService.selectImage(selectImageDto);
     }
     createRoom(id, createRoomDto) {
         return this.roomService.createRoom(id, createRoomDto);
@@ -42,6 +46,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], RoomController.prototype, "getAllImage", null);
+__decorate([
+    (0, decorators_1.Post)(),
+    __param(0, (0, decorators_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [select_image_dto_1.SelectImageDto]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "selectImage", null);
 __decorate([
     (0, swagger_1.ApiResponse)({
         description: '방 생성 성공!',
