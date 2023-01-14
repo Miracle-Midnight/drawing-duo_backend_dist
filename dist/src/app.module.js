@@ -56,7 +56,7 @@ AppModule = __decorate([
             }),
             gateway_module_1.ChatsAndDrawModule,
             serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', ''),
+                rootPath: (0, path_1.join)(__dirname, '..', 'client'),
                 exclude: ['/api*'],
             }),
             auth_module_1.AuthModule,
